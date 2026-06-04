@@ -1,0 +1,5 @@
+add_subdirectory(main)
+add_subdirectory(inpaint)
+add_subdirectory(dataf)
+add_subdirectory(util)
+add_subdirectory(mrcimg)

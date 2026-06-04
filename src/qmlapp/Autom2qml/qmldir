@@ -1,0 +1,16 @@
+module Autom2qml
+singleton Constants 1.0 Constants.qml
+singleton AppState 1.0 AppState.qml
+singleton Router 1.0 Router.qml
+singleton MockBackend 1.0 MockBackend.qml
+singleton LogicHandler 1.0 LogicHandler.qml
+singleton CommandChainManager 1.0 CommandChainManager.qml
+singleton BatchProcessHandler 1.0 BatchProcessHandler.qml
+singleton StateManager 1.0 StateManager.qml
+FilePairScanner 1.0 FilePairScanner.qml
+EventListSimulator 1.0 EventListSimulator.qml
+EventListModel 1.0 EventListModel.qml
+PathSelector 1.0 components/PathSelector/PathSelector.qml
+DecimalSpinBox 1.0 components/DecimalSpinBox/DecimalSpinBox.qml
+StyledButton 1.0 components/StyledButton/StyledButton.qml
+CustomProgressBar 1.0 components/CustomProgressBar/CustomProgressBar.qml

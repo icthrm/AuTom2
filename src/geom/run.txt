@@ -1,0 +1,2 @@
+./FindOffset -i /home/xzh/下载/ETdata/BBb/BBb.st -a /home/xzh/下载/data/BBb/BBb.rawtlt -g 0
+

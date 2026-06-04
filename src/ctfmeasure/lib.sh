@@ -1,0 +1,4 @@
+#!/bin/bash
+
+CURRENT_DIR=`pwd`
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURRENT_DIR/3rdlib/lib64

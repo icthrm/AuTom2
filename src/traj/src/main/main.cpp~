@@ -1,0 +1,131 @@
+#include "opts.h"
+#include <iostream>
+#include <fstream>
+#include "4pcs/4pcs_core.h"
+#include "dataf/dataf.h"
+#include "dataf/calibration.h"
+#include "trajectory/trajectory.h"
+#include "optimization/optimization.h"
+#include "mrcimg/mrc2img.h"
+#include "optimization/constants.h"
+#include "ANN/ANN.h"
+#include <string>
+
+using namespace std;
+// using namespace ann_1_1_char;
+
+int main(int argc, char **argv){
+	struct options opts;
+	GetOpts(argc, argv, &opts);
+	
+	util::MrcStack mrcs;
+	string mrcfile = opts.input;
+	cout<<"mrcfile : "<<mrcfile<<endl;
+	mrcs.Open(mrcfile.c_str());
+
+	util::ImgMatchVector imvector;
+	imvector.ReadVectorByFolder(opts.matchs);
+	
+	vector<float> angles;
+	if(!util::ReadAnglesByName(opts.inputangle , &angles)) {
+	    std::cout<<"can't open tilt angle file."<<endl;
+	    return -1;
+	}
+// 	
+	cout<<"--------------------------------------->>"<<endl;
+	cout<<"Build trajectory by matchs:"<<endl;
+	util::TrackSpace trackspace;
+	trackspace.Create(imvector, angles);
+	imvector.Release();
+	util::writeIMODfidModel(trackspace , mrcs.Width() , mrcs.Height() , mrcs.Size() , "init.fid.txt");
+	
+	vector<trajectory> T;
+	ReadTragectorsByfile(&T , "init.fid.txt");
+	
+	cout<<"---------------------------------------"<<endl;
+	
+	vector<frame> frames;
+	string outputDir = string(opts.path);
+	if(outputDir[outputDir.length()-1] != '/'){
+	    outputDir+="/";
+	}
+	int posDot=mrcfile.find_last_of(".");
+	int posStart = mrcfile.find_last_of("/");
+	if(posStart != 0) posStart++;
+	string basename=mrcfile.substr(posStart,posDot-posStart);
+	string errorOutputLog = "error.log";
+	string cmd;
+	int error;
+	
+	string anglefile = outputDir + basename +".rawtlt";
+	
+	if(anglefile != string(opts.inputangle)){
+	    cmd = string("cp " + string(opts.inputangle) + " " + anglefile);
+	    error=system((cmd + " > " + errorOutputLog).c_str());
+	    if (error!=0)
+	    {
+		cout<<"ERROR: error executing the command "<<cmd<<" in function RAPTOPR::Main"<<endl;
+		exit(error);
+	    }
+	}
+	
+	Optimization::OptimizationMain(T , angles , outputDir , basename, frames , mrcs.Width() , mrcs.Height() , mrcs.Size() );
+
+	//align
+	cout<<"------------------------------------------------"<<endl;
+        cout<<"Generating aligned stack at "<<getDate()<<endl;
+	cmd=string("tiltalign -param "+ outputDir +  basename + "_tiltalignScript.txt");
+	cout<<"excute cmd: "<<cmd<<endl;
+        error=system((cmd + " > " + errorOutputLog).c_str());
+        if (error!=0)
+        {
+            cout<<"ERROR: error executing the command "<<cmd<<" in function RAPTOPR::Main"<<endl;
+            exit(error);
+        }
+        
+        string outputangle = outputDir+basename+".tlt ";
+	if(outputangle !=string(opts.newangle) ){
+	    cmd = string("cp "+ outputangle + " " + string(opts.newangle));
+	    error=system((cmd + " > " + errorOutputLog).c_str());
+	    if (error!=0)
+	    {
+		cout<<"ERROR: error executing the command "<<cmd<<" in function RAPTOPR::Main"<<endl;
+		exit(error);
+	    }
+	}
+        
+        //create aligned stack
+        string inputimg = string(opts.input);
+	string outputimg = string(opts.output);
+        cmd=string("newstack  -input " + inputimg + " -output " + outputimg + " -offset 0,0 -xform " +  outputDir + basename + ".xf -secs ");
+        bool flagFirst=true;
+        for (unsigned int kk=0;kk<frames.size();kk++)
+        {
+            if (frames[kk].discard==false)
+            {
+                stringstream itoa;
+                itoa<<kk;
+                if (flagFirst)
+                {
+                    cmd+=itoa.str();
+                    flagFirst=false;
+                }
+                else cmd+=("," + itoa.str());
+            }
+        }
+	cout<<"excute cmd: "<<cmd<<endl;
+        error=system((cmd + " > " + errorOutputLog).c_str());
+        if (error!=0)
+        {
+            cout<<"ERROR: error executing the command "<<cmd<<" in function RAPTOR::Main"<<endl;
+            exit(error);
+        }
+    //----------------------------------------------
+
+    cout<<"------------------------------------"<<endl;
+    cout<<"Releasing memory"<<endl;
+    //free memory correctly
+    freeTrajectoryVector(T);
+    T.clear();
+    mrcs.Close();
+}

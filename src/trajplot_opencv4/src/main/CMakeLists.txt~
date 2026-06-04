@@ -1,0 +1,6 @@
+
+MESSAGE(STATUS "building main")
+
+add_executable(markerauto main.cpp)
+
+target_link_libraries(markerauto  4pcs util dataf  trajectory optimization mrcimg)

@@ -1,0 +1,19 @@
+#include <iostream>
+
+#include "function.h"
+
+
+using namespace std;
+
+int main(int argc, char **argv)
+{
+    cout<<"test!"<<endl;
+//     Plot_PointList_xy("BBa.fid.txt");
+//     Plot_PointList_xy1("BBa.fid.txt");
+//      Plot_PointList_xy1("test081_fin.fid.txt");
+//     Plot_PointList_xz_yz("test081_fin.fid.txt");
+//     Plot_PointList_xz_yz("test08.fid.txt");
+    Plot_Tragitorys("test08.fid.txt");
+    wait_for_key();
+}
+

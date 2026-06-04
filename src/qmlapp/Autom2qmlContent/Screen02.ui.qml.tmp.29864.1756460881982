@@ -1,0 +1,180 @@
+
+
+/*
+This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
+It is supposed to be strictly declarative and only uses a subset of QML. If you edit
+this file manually, you might introduce QML code that is not supported by Qt Design Studio.
+Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
+*/
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Autom2qml
+
+Rectangle {
+    id: root
+    
+    color: Constants.backgroundColor
+
+    property bool isProcessRunning: false
+
+    ColumnLayout {
+        id: mainLayout
+        anchors.centerIn: parent
+        width: parent.width * 0.9
+        spacing: 20
+
+        // Title
+        Text {
+            text: "Step 2: Apply Transformation"
+            font.pixelSize: 24
+            font.bold: true
+            Layout.alignment: Qt.AlignHCenter
+            Layout.bottomMargin: 10
+            color: "#2C3E50"
+        }
+
+        // Subtitle
+        Text {
+            text: "Apply the generated transformation matrix to align your MRC file"
+            font.pixelSize: 14
+            Layout.alignment: Qt.AlignHCenter
+            Layout.bottomMargin: 20
+            color: "#7F8C8D"
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        // File Information Group
+        GroupBox {
+            title: "Transformation Details"
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
+            
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 15
+                
+                // XF File Info
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 10
+                    
+                    Text {
+                        text: "Transformation File:"
+                        font.bold: true
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "#34495E"
+                    }
+                    
+                    Text {
+                        text: LogicHandler.fixedXfFile
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.family: "Courier"
+                        color: "#16A085"
+                        wrapMode: Text.WrapAnywhere
+                        Layout.fillWidth: true
+                    }
+                }
+                
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 1
+                    color: "#BDC3C7"
+                }
+                
+                // Input MRC Info
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 10
+                    
+                    Text {
+                        text: "Input MRC File:"
+                        font.bold: true
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "#34495E"
+                    }
+                    
+                    Text {
+                        text: LogicHandler.initialMrcFile
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.family: "Courier"
+                        color: "#2980B9"
+                        wrapMode: Text.WrapAnywhere
+                        Layout.fillWidth: true
+                    }
+                }
+                
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 1
+                    color: "#BDC3C7"
+                }
+                
+                // Output MRC Info
+                Row {
+                    Layout.fillWidth: true
+                    spacing: 10
+                    
+                    Text {
+                        text: "Output File:"
+                        font.bold: true
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "#34495E"
+                    }
+                    
+                    Text {
+                        text: LogicHandler.alignedMrcFile
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.family: "Courier"
+                        color: "#E74C3C"
+                        wrapMode: Text.WrapAnywhere
+                        Layout.fillWidth: true
+                    }
+                }
+            }
+        }
+
+        // Action Section
+        ColumnLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 15
+            
+            Button {
+                id: applyButton
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 45
+                Layout.alignment: Qt.AlignHCenter
+
+                text: isProcessRunning ? "Applying Transformation..." : "Apply Transformation"
+                enabled: !isProcessRunning
+                
+                font.pixelSize: 16
+                font.bold: true
+
+                Connections {
+                    function onClicked() {
+                        LogicHandler.startProcessApplyXf(backend)
+                    }
+                }
+            }
+
+            ProgressBar {
+                id: progressBar
+                Layout.preferredWidth: 250
+                Layout.alignment: Qt.AlignHCenter
+
+                // Bind the value directly to the property in our logic handler.
+                value: LogicHandler.processProgress / 100.0
+            }
+        }
+
+        CommandView {
+            // Layout properties for command output
+            Layout.fillWidth: true
+            Layout.preferredHeight: 200
+            Layout.minimumHeight: 100
+            Layout.topMargin: 20
+            bindProgram: "mrcstack"
+        }
+    }
+}

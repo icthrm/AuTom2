@@ -1,0 +1,11 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+void wait_for_key();
+
+void Plot_PointList_xy(const char* filename);
+void Plot_PointList_xy1(const char* filename);
+void Plot_PointList_xz_yz(const char* filename);
+void Plot_Tragitorys(const char* filename);

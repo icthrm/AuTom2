@@ -1,0 +1,31 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "Default Config",
+            "description": "Default build configuration using the system compiler and a specific Qt SDK.",
+            "generator": "Unix Makefiles", // 或者 "Ninja"
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": {
+                    "type": "STRING",
+                    "value": "/home/xzh/Qt/6.5.3/gcc_64" // <-- 你的 Qt 路径在这里
+                },
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
+        }
+    ]
+}

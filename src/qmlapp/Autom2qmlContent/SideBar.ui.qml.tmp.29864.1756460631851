@@ -1,0 +1,61 @@
+
+
+/*
+This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
+It is supposed to be strictly declarative and only uses a subset of QML. If you edit
+this file manually, you might introduce QML code that is not supported by Qt Design Studio.
+Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
+*/
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+
+Rectangle {
+    id: root
+    width: 40
+
+    property var stateManager
+
+    property var stepsModel: ["Step 1: Select Files", "Step 2: Run Process", "Step 3: 3D Reconstruction"]
+
+    ColumnLayout {
+        id: colLayout
+
+        anchors.fill: parent
+        anchors.margins: 10
+        spacing: 5
+
+        Repeater {
+            model: root.stepsModel
+
+            delegate: Button {
+                id: stepButton
+                required property int index
+                required property string modelData
+                text: modelData
+                Layout.fillWidth: true
+                Layout.preferredHeight: 100
+
+                //enabled: index == 0 || stateManager.completedSteps.includes(
+                //             index - 1)
+                highlighted: stateManager.currentStep === index
+
+                Connections {
+                    target: stepButton
+                    function onClicked() {
+                        stateManager.navigateTo(index)
+                    }
+
+                    Component.onCompleted: {
+                        console.log("Creating button index:", index,
+                                    "with data:", JSON.stringify(modelData))
+                    }
+                }
+            }
+        }
+
+        Item {
+            Layout.fillHeight: true
+        }
+    }
+}

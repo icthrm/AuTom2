@@ -1,0 +1,10 @@
+build
+build2
+old1
+.cache
+.vscode
+.DS_Store
+out
+command_history.log
+tmp
+result

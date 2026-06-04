@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/loading">
+        <file>lib/loading.gif</file>
+    </qresource>
+    <qresource prefix="/texture">
+        <file>lib/rectangle.png</file>
+    </qresource>
+    <qresource prefix="/logo">
+        <file>lib/icon.png</file>
+    </qresource>
+</RCC>
