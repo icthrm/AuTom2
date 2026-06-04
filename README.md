@@ -76,6 +76,14 @@ Detailed installation instructions, workflow descriptions, parameter explanation
 manual.pdf
 ```
 
+## Sample Data
+
+Sample data files are available from the GitHub release:
+
+```text
+https://github.com/icthrm/AuTom2/releases/tag/sample-data-v1
+```
+
 ## Repository Layout
 
 ```text
