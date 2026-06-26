@@ -18,9 +18,7 @@ const char mainQmlFile[] = "qrc:/qt/qml/Autom2qmlContent/App.qml";
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_ComponentsPlugin)
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_EffectsPlugin)
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_ApplicationPlugin)
-Q_IMPORT_QML_PLUGIN(FlowViewPlugin)
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_LogicHelperPlugin)
-Q_IMPORT_QML_PLUGIN(QtQuick_Studio_MultiTextPlugin)
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_EventSimulatorPlugin)
 Q_IMPORT_QML_PLUGIN(QtQuick_Studio_EventSystemPlugin)
 

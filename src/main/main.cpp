@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
     // 引擎加载 QML 文件
     // engine.load(url);
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
+    engine.addImportPath("qrc:/qt/qml");
     engine.addImportPath(":/");
     engine.load(url);
     set_qt_environment(); // 设置 Qt 环境变量

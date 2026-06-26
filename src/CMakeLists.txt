@@ -56,13 +56,22 @@ add_subdirectory(qmlapp/Autom2qml)
 add_subdirectory(qmlapp/Autom2qmlContent)
 add_subdirectory(qmlapp/Dependencies)
 
+if(BUILD_QDS_COMPONENTS)
+    target_compile_definitions(autom2 PRIVATE BUILD_QDS_COMPONENTS=1)
+endif()
+
 target_link_libraries(autom2 PRIVATE
     -Wl,--whole-archive
     Autom2qml
     Autom2qmlContent
     Autom2qmlplugin
     Autom2qmlContentplugin
-    QuickStudioApplication
+    QuickStudioApplicationplugin
+    QuickStudioComponentsplugin
+    QuickStudioEffectsplugin
+    QuickStudioLogicHelperplugin
+    QuickStudioEventSimulatorplugin
+    QuickStudioEventSystemplugin
     -Wl,--no-whole-archive
     )
 

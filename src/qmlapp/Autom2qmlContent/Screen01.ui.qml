@@ -45,7 +45,7 @@ Rectangle {
             // Subtitle
             Text {
                 text: "Select your MRC file, tilt angle file, and output directory to begin marker-based alignment"
-                font.pixelSize: 14
+                font.pixelSize: 18
                 Layout.alignment: Qt.AlignHCenter
                 Layout.bottomMargin: 20
                 color: "#7F8C8D"

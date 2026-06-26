@@ -49,7 +49,8 @@ QtObject {
                 {
                     id: "markerauto2",
                     program: "mpirun",
-                    mode: "global",
+                    mode: "globalondir",
+                    workdir: function() { return AppState.outputDir },
                     args: function() {
                         let args = [
                             "-n", "2",
@@ -394,7 +395,8 @@ QtObject {
                 {
                     id: "markerauto2",
                     program: "mpirun",
-                    mode: "global",
+                    mode: "globalondir",
+                    workdir: function() {return AppState.outputDir }, 
                     args: function() {
                         let args = [
                             "-n", "2",
@@ -725,6 +727,9 @@ QtObject {
             backend.runCommandOnDir(workdir, step.program, args)
         } else if (mode === "global") {
             backend.runCommandGlobal(step.program, args)
+        } else if (mode == "globalondir") {
+            let workdir = typeof step.workdir === "function" ? step.workdir() : step.workdir
+            backend.runCommandGlobalOnDir(workdir, step.program, args) 
         } else {
             backend.runCommand(step.program, args)
         }

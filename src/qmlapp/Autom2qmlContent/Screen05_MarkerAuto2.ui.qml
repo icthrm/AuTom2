@@ -37,7 +37,7 @@ Rectangle {
         // Subtitle
         Text {
             text: "Marker-based automatic alignment for cryo-electron tomography"
-            font.pixelSize: 14
+            font.pixelSize: 18
             Layout.alignment: Qt.AlignHCenter
             Layout.bottomMargin: 20
             color: "#7F8C8D"
@@ -51,6 +51,11 @@ Rectangle {
         //     title: "Input Files"
         //     Layout.fillWidth: true
         //     Layout.alignment: Qt.AlignHCenter
+
+        //    label: Text {
+        //        text: parent.title
+        //        font.pixelSize: 18       // 更改字体大小 (像素大小)\
+        //    }
 
         //     ColumnLayout {
         //         anchors.fill: parent

@@ -1,11 +1,10 @@
 # ============================================================
-# autom2 构建+分发镜像
-# 基础: CUDA 12.6 + Ubuntu 22.04
-# 输出: /workspace/autom2/dist/ 目录，内含可执行文件+全部动态库
-#       直接拷 dist/ 到任意同架构 Linux 即可运行，无需额外依赖
+# autom2 构建镜像
+# 基础: CUDA 12.2 + Ubuntu 22.04
+# 用途: 在容器内编译并直接运行 autom2
 # ============================================================
 
-FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.2.2-devel-ubuntu22.04
 
 LABEL maintainer="autom2-dev"
 LABEL description="autom2 build environment with self-contained binary packaging"
@@ -29,6 +28,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     qt6-base-dev qt6-declarative-dev qt6-tools-dev \
     libqt6svg6-dev libqt6opengl6-dev \
     libqt6shadertools6-dev qt6-shader-baker \
+    qml6-module-qtquick-controls qml6-module-qtquick-layouts \
+    qml6-module-qtqml-workerscript qml6-module-qt5compat-graphicaleffects \
+    qml6-module-qtquick-dialogs qml6-module-qtquick-shapes \
+    qml6-module-qt-labs-qmlmodels qml6-module-qtquick-templates \
+    qml6-module-qtcore qml6-module-qtqml qml6-module-qtquick \
+    qml6-module-qtquick-window \
     libopenmpi-dev openmpi-bin \
     libeigen3-dev libfftw3-dev \
     libopencv-dev libceres-dev libnlopt-dev \
@@ -36,10 +41,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev libjpeg-dev libtiff-dev libwebp-dev \
     libharfbuzz-dev libgstreamer1.0-dev \
     libgstreamer-plugins-base1.0-dev libvulkan-dev libxkbcommon-dev \
-    python3 python3-pip patchelf \
+    fonts-noto-cjk fonts-noto-color-emoji fonts-wqy-zenhei \
+    python3 python3-pip python-is-python3 gnuplot patchelf \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir cmake==3.27.9
+# cryo_EM/Autom3D 打开 MRC 文件时调用 python 运行 ncempy + numpy
+RUN pip3 install --no-cache-dir cmake==3.27.9 ncempy numpy
 
 # --------------------------------------------------------------
 # 3. 拷贝源码并编译
@@ -51,41 +58,5 @@ RUN rm -rf build build_docker \
     && cmake -B build -S . \
     && cmake --build build -j$(nproc)
 
-# --------------------------------------------------------------
-# 4. 打包：收集动态库 + 修改 RPATH
-# --------------------------------------------------------------
-RUN mkdir -p dist \
-    && cp -r build/bin/* dist/ \
-    && for f in dist/*; do \
-           [ -x "$f" ] || continue; \
-           ldd "$f" 2>/dev/null | grep '=>' | awk '{print $3}' | while read libpath; do \
-               [ -f "$libpath" ] || continue; \
-               case "$(basename "$libpath")" in \
-                   ld-linux*|libc.so*|libm.so*|libdl.so*|libpthread.so*|librt.so*) continue ;; \
-               esac; \
-               cp -n "$libpath" dist/ 2>/dev/null || true; \
-           done; \
-       done \
-    && for f in dist/*; do \
-           [ -x "$f" ] || continue; \
-           patchelf --set-rpath '$ORIGIN' "$f" 2>/dev/null || true; \
-       done \
-    && echo "=== 处理间接依赖 ===" \
-    && for f in dist/*; do \
-           [ -x "$f" ] || continue; \
-           ldd "$f" 2>/dev/null | grep 'not found' | awk '{print $1}' | while read lib; do \
-               libpath=$(find /lib /usr/lib -name "$lib" 2>/dev/null | head -1); \
-               if [ -f "$libpath" ]; then cp -n "$libpath" dist/ 2>/dev/null; fi; \
-           done; \
-       done
-
-# --------------------------------------------------------------
-# 5. 验证
-# --------------------------------------------------------------
-RUN echo "=== 验证 autom2 是否能裸运行 ===" \
-    && ldd dist/autom2 | grep -E 'not found' && echo "有缺失库！" || echo "全部找到，可以裸运行" \
-    && echo "=== 输出目录 ===" \
-    && ls -lh dist/ | head -20
-
-# 默认入口：显示打包好的目录内容
-CMD ["ls", "-lh", "/workspace/autom2/dist"]
+# 默认入口
+CMD ["bash"]

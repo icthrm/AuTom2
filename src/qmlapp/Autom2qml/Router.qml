@@ -28,14 +28,14 @@ QtObject {
                 },
                 {
                     id: "reconstruction",
-                    title: "Step 4: 3D Reconstruction",
+                    title: "Step 3: 3D Reconstruction",
                     screen: "Screen03.ui.qml",
                     icon: "🧊",
                     showCommandView: true
                 },
                 {
                     id: "summary",
-                    title: "Step 5: Summary",
+                    title: "Step 4: Summary",
                     screen: "Screen07_Summary.ui.qml",
                     icon: "✅",
                     showCommandView: false

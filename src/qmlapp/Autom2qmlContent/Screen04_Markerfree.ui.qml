@@ -37,7 +37,7 @@ Rectangle {
         // Subtitle
         Text {
             text: "GPU-accelerated robust marker-free alignment for high-resolution cryo-electron tomography"
-            font.pixelSize: 14
+            font.pixelSize: 18
             Layout.alignment: Qt.AlignHCenter
             Layout.bottomMargin: 15
             color: "#7F8C8D"

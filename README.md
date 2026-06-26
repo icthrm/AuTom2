@@ -1,43 +1,35 @@
-# AuTom2
-
-### An integrated toolkit for automated cryo-electron tomography processing
+# AuTom2: an integrated toolkit for automated cryo-electron tomography processing
 
 AuTom2 is an integrated toolkit for cryo-electron tomography (cryo-ET) data processing. It provides a graphical workflow for tilt-series alignment, optional CTF-related processing, tomographic reconstruction, result inspection, and batch processing.
 
-The software supports both marker-free alignment and marker-based alignment, allowing users to process tilt series with or without fiducial markers within a unified interface.
+The software supports both marker-free alignment and marker-based alignment, allowing users to process tilt series with or without fiducial markers within the same interface.
 
 ## Features
 
-* Single-dataset and batch cryo-ET processing workflows
-* Marker-free tilt-series alignment
-* Marker-based alignment with fiducial-track inspection
-* Optional fiducial-marker erasing
-* Optional CTF estimation and correction
-* TiltRec-based tomographic reconstruction
-* MRC visualization for projection stacks and reconstructed volumes
-* Docker-based build and launch workflow
+- Single-dataset and batch cryo-ET processing workflows.
+- Marker-free tilt-series alignment.
+- Marker-based alignment with fiducial track inspection.
+- Optional marker erasing and CTF-related processing.
+- TiltRec-based tomographic reconstruction.
+- MRC visualization for inspecting projection stacks and reconstructed volumes.
+- Docker-script-based build and launch workflow.
 
 ## Quick Start
 
-Build and run AuTom2 from the project root:
+Prepare the Docker image `autom2-dist`, then build and run AuTom2 from the project root:
 
 ```bash
+cd /path/to/autom2
 ./docker-build.sh
 ./docker-run.sh
 ```
 
-The run script mounts the local `data/` directory to `/workspace/data` inside the container. Place input datasets in `data/`, or modify the mount path in `docker-run.sh` if needed.
+The run script mounts the local `data` directory to `/workspace/data` inside the container. Put input datasets in `data/`, or adjust the mount path in `docker-run.sh` if needed.
 
-If a prebuilt Docker image archive is provided, import it first:
+If a Docker image archive is provided, import it first:
 
 ```bash
 docker load -i autom2-dist.tar
-```
-
-Then run AuTom2:
-
-```bash
-./docker-run.sh
 ```
 
 ## Local Build
@@ -50,11 +42,11 @@ cmake --build build -j$(nproc)
 cmake --install build
 ```
 
-After installation, executables can be run directly if the installation directory is available in `PATH`.
+After installation, executables can be run directly if the install directory is available in `PATH`.
 
-## Main Modules
+## Main Executables
 
-AuTom2 integrates several cryo-ET processing modules, including:
+AuTom2 integrates several processing modules, including:
 
 ```text
 Markerfree
@@ -70,7 +62,7 @@ mrcstack
 
 ## Documentation
 
-Detailed installation instructions, workflow descriptions, parameter explanations, screenshots, and troubleshooting information are available in the AuTom2 user manual:
+For detailed usage instructions, parameter descriptions, screenshots, and workflow explanations, see the AuTom2 user manual:
 
 ```text
 manual.pdf
@@ -93,14 +85,12 @@ docs/             Additional project documentation
 docker-build.sh   Docker-based build script
 docker-run.sh     Docker-based GUI launch script
 BUILD.md          Build notes
-manual.pdf        User manual
 ```
 
 ## Citation
 
-If you use AuTom2 in academic work, please cite the corresponding AuTom2 publication or software release.
+If you use AuTom2 in academic work, please cite the corresponding AuTom2 paper or software release.
 
 ## License
 
-See the LICENSE file for licensing information.
-::: 
+This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.

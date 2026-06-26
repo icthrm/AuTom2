@@ -30,7 +30,7 @@ Rectangle {
         // Subtitle
         Text {
             text: "Choose between marker-free alignment or marker-based alignment"
-            font.pixelSize: 16
+            font.pixelSize: 18
             Layout.alignment: Qt.AlignHCenter
             color: "#7F8C8D"
             horizontalAlignment: Text.AlignHCenter

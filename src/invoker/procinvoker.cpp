@@ -125,6 +125,49 @@ Q_INVOKABLE void ProcInvoker::runCommandOnDir(const QString& work_dir, const QSt
 
 }
 
+Q_INVOKABLE void ProcInvoker::runCommandGlobalOnDir(const QString& work_dir, const QString& program, const QStringList& args) 
+{
+    qDebug() << "C++ ProcInvoker: Kicking off command via QtConcurrent:" << program << args;
+
+    // 将参数转换为 reproc 需要的格式
+    std::vector<std::string> command_line;
+    std::string program_str = program.toStdString();
+    std::filesystem::path program_path = program_str.c_str();
+    #ifdef _WIN32
+        other_program_path.replace_extension(".exe");
+    #endif
+    command_line.push_back(program_path.string());
+    qDebug() << "C++ ProcInvoker: Program path is:" << QString::fromStdString(program_path.string());
+    for(const QString& arg : args) {
+        program_str = arg.toStdString(); // 可能是 "-n", "some.file", "." 等
+
+        std::filesystem::path program_path2;
+
+        if (program_str == ".") {
+            // 情况 1: 刚好是单个 "."
+            program_path2 = m_workingDir;
+        } 
+        else if (program_str.rfind("./", 0) == 0) {
+            // 情况 2: 以 "./" 开头 (Linux/Unix 风格)
+            program_path2 = m_workingDir / program_str.substr(2);
+        } 
+        #ifdef _WIN32
+        else if (program_str.rfind(".\\", 0) == 0) {
+            // 情况 3: 以 ".\" 开头 (Windows 风格)
+            program_path2 = m_workingDir / program_str.substr(2);
+        }
+        #endif
+        else {
+            // 情况 4: 其他参数（如 -n, -a）或普通文本，保持原样
+            program_path2 = program_str;
+        }
+        command_line.push_back(program_path2.string());
+    }
+
+    runCommandDirect(command_line, program, work_dir);
+
+}
+
 void ProcInvoker::runCommandDirect(std::vector<std::string> command_line, const QString& program, QString workingdir) {
     // 如果未指定工作目录，使用默认值
     if(workingdir.isEmpty()) {
@@ -503,5 +546,21 @@ QString ProcInvoker::getSvgInfo(const QString& filePath)
     // Convert to JSON string
     QJsonDocument doc(svgInfo);
     return QString(doc.toJson(QJsonDocument::Compact));
+}
+
+#include <QFileDialog>
+
+QString ProcInvoker::selectFolder(const QString& title, const QString& defaultPath)
+{
+    QString dir = QFileDialog::getExistingDirectory(nullptr, title, defaultPath);
+    qDebug() << "selectFolder returned:" << dir;
+    return dir;
+}
+
+QString ProcInvoker::selectFile(const QString& title, const QString& defaultPath, const QString& filter)
+{
+    QString file = QFileDialog::getOpenFileName(nullptr, title, defaultPath, filter);
+    qDebug() << "selectFile returned:" << file;
+    return file;
 }
 

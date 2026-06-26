@@ -5,6 +5,8 @@ import QtQuick.Controls
 SpinBox {
     id: root
 
+    editable: true
+
     // 暴露给外部使用的属性
     property int decimals: 2
     

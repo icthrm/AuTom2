@@ -9,10 +9,9 @@ docker run --rm \
     -w /workspace/autom2 \
     "${IMAGE}" \
     bash -c "
-      rm -rf build dist
+      rm -rf build
       cmake -B build -S . 2>&1
       cmake --build build -j\$(nproc) 2>&1
-      mkdir -p dist && cp build/bin/* dist/
       echo 'done'
     "
 

@@ -35,6 +35,7 @@ public slots:
     Q_INVOKABLE void runCommand(const QString& program, const QStringList& args);
     Q_INVOKABLE void runCommandGlobal(const QString& program, const QStringList& args);
     Q_INVOKABLE void runCommandOnDir(const QString& work_dir, const QString& program, const QStringList& args);
+    Q_INVOKABLE void runCommandGlobalOnDir(const QString& work_dir, const QString& program, const QStringList& args);
     Q_INVOKABLE void terminateCommand(const QString &program);
     Q_INVOKABLE QString loadMrcSlice(const QString& filePath, int sliceIndex);
     Q_INVOKABLE int getMrcSliceCount(const QString& filePath);
@@ -49,6 +50,10 @@ public slots:
     // SVG API
     Q_INVOKABLE QString loadSvg(const QString& filePath, int width = 0, int height = 0);
     Q_INVOKABLE QString getSvgInfo(const QString& filePath);
+
+    // 文件夹/文件选择对话框（Qt6.2 没有 FolderDialog/FileDialog，用 C++ QFileDialog 替代）
+    Q_INVOKABLE QString selectFolder(const QString& title = QString(), const QString& defaultPath = QString());
+    Q_INVOKABLE QString selectFile(const QString& title = QString(), const QString& defaultPath = QString(), const QString& filter = QString());
 
 
 

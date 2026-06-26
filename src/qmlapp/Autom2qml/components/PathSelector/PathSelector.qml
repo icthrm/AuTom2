@@ -2,7 +2,6 @@
 
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Dialogs
 
 // This component uses the UI form and adds the business logic.
 PathSelectorForm {
@@ -11,10 +10,10 @@ PathSelectorForm {
     property var nameFilters: []
     property bool selectFolder: false
 
-    // 跨平台默认路径
+    // 跨平台默认路径（Docker 环境下 /host 是挂载的宿主机主目录）
     readonly property string defaultFolder: Qt.platform.os === "windows"
                                            ? "file:///C:/"
-                                           : "file:///home"
+                                           : "file:///host"
 
     // --- Logic for the UI elements ---
 
@@ -27,10 +26,28 @@ PathSelectorForm {
 
     // 处理按钮点击
     browseButton.onClicked: {
-        if (selectFolder == false)
-            fileDialog.open()
-        else
-            folderDialog.open()
+        if (selectFolder == false) {
+            // Qt6.2 没有 FileDialog，用 C++ QFileDialog 替代
+            let localDefault = root.urlToLocalPath(root.defaultFolder)
+            let filter = root.nameFilters.length > 0 ? root.nameFilters.join(";;") : ""
+            let selected = realBackend.selectFile(root.fileDialogTitle, localDefault, filter)
+            if (selected) {
+                root.path = selected
+                console.log("File selected: " + root.path)
+            } else {
+                console.log("User canceled file selection")
+            }
+        } else {
+            // Qt6.2 没有 FolderDialog，用 C++ QFileDialog 替代
+            let localDefault = root.urlToLocalPath(root.defaultFolder)
+            let selected = realBackend.selectFolder(root.fileDialogTitle, localDefault)
+            if (selected) {
+                root.path = selected
+                console.log("Folder selected: " + root.path)
+            } else {
+                console.log("User canceled folder selection")
+            }
+        }
     }
 
 
@@ -78,49 +95,4 @@ PathSelectorForm {
             return decodedString
         }
     }
-
-    FileDialog {
-        id: fileDialog
-        title: root.fileDialogTitle
-        currentFolder: root.defaultFolder
-
-        nameFilters: root.nameFilters
-
-        onAccepted: {
-            let urlString = fileDialog.selectedFile
-
-            if (urlString) {
-                root.path = root.urlToLocalPath(urlString)
-                console.log("File selected: " + root.path)
-            } else {
-                console.warn("FileDialog was accepted, but the file string is empty.")
-            }
-        }
-
-        onRejected: {
-            console.log("User canceled file selection")
-        }
-    }
-
-    FolderDialog {
-        id: folderDialog
-        title: root.fileDialogTitle
-        currentFolder: root.defaultFolder
-
-        onAccepted: {
-            let urlString = folderDialog.selectedFolder
-
-            if (urlString) {
-                root.path = root.urlToLocalPath(urlString)
-                console.log("Folder selected: " + root.path)
-            } else {
-                console.warn("FolderDialog was accepted, but the folder string is empty.")
-            }
-        }
-
-        onRejected: {
-            console.log("User canceled folder selection")
-        }
-    }
-
 }

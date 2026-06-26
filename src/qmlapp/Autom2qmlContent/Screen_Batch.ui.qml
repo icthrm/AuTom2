@@ -901,7 +901,10 @@ Rectangle {
                         failedCount, "failed")
             batchResultTitle.text = failedCount > 0 ? "Batch Completed with Warnings" : "Batch Completed Successfully"
             batchResultTitle.color = failedCount > 0 ? "#E67E22" : "#27AE60"
-            let totalElapsed = batchStartTime ? Math.floor((new Date() - batchStartTime) / 1000) : 0
+            
+            // 【修改】去掉 Math.floor，直接除以 1000 得到高精度的浮点数秒
+            let totalElapsed = batchStartTime ? (new Date() - batchStartTime) / 1000 : 0
+            
             batchResultMessage.text = `Total: ${BatchProcessHandler.totalCount}\nSuccess: ${successCount}\nFailed: ${failedCount}\nTime: ${formatElapsedTime(totalElapsed)}`
             batchResultPopup.open()
         }

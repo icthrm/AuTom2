@@ -67,7 +67,7 @@ Rectangle {
         // Subtitle
         Text {
             text: "Comparing initial (before alignment) and final (after alignment) marker trajectories"
-            font.pixelSize: 14
+            font.pixelSize: 18
             Layout.alignment: Qt.AlignHCenter
             color: "#7F8C8D"
             horizontalAlignment: Text.AlignHCenter
