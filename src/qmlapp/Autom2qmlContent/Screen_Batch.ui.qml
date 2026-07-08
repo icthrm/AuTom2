@@ -115,7 +115,13 @@ Rectangle {
                             font.pixelSize: 14
                             Layout.preferredWidth: 150
                             Layout.preferredHeight: 45
-                            onClicked: scanFolderDialog.open()
+                            onClicked: {
+                                let path = realBackend.selectFolder("Select Folder to Scan for MRC and Rawtlt Files", "/host")
+                                if (path) {
+                                    console.log("Scanning folder:", path)
+                                    fileScanner.scanFolder(path)
+                                }
+                            }
 
                             background: Rectangle {
                                 color: parent.down ? "#2980B9" : "#3498DB"
@@ -303,7 +309,13 @@ Rectangle {
                             font.pixelSize: 14
                             Layout.preferredWidth: 100
                             Layout.preferredHeight: 35
-                            onClicked: outputDirDialog.open()
+                            onClicked: {
+                                let path = realBackend.selectFolder("Select Output Directory", outputDirField.text || "/host")
+                                if (path) {
+                                    outputDirField.text = path
+                                    console.log("Output directory selected:", path)
+                                }
+                            }
                         }
                     }
 
@@ -850,27 +862,7 @@ Rectangle {
         }
     }
 
-    FolderDialog {
-        id: outputDirDialog
-        title: "Select Output Directory"
 
-        onAccepted: {
-            let path = fileScanner.urlToLocalPath(selectedFolder)
-            outputDirField.text = path
-            console.log("Output directory selected:", path)
-        }
-    }
-
-    FolderDialog {
-        id: scanFolderDialog
-        title: "Select Folder to Scan for MRC and Rawtlt Files"
-
-        onAccepted: {
-            let path = fileScanner.urlToLocalPath(selectedFolder)
-            console.log("Scanning folder:", path)
-            fileScanner.scanFolder(path)
-        }
-    }
 
     // ========== File Scanner Signal Handling ==========
     Connections {
@@ -901,10 +893,10 @@ Rectangle {
                         failedCount, "failed")
             batchResultTitle.text = failedCount > 0 ? "Batch Completed with Warnings" : "Batch Completed Successfully"
             batchResultTitle.color = failedCount > 0 ? "#E67E22" : "#27AE60"
-            
+
             // 【修改】去掉 Math.floor，直接除以 1000 得到高精度的浮点数秒
             let totalElapsed = batchStartTime ? (new Date() - batchStartTime) / 1000 : 0
-            
+
             batchResultMessage.text = `Total: ${BatchProcessHandler.totalCount}\nSuccess: ${successCount}\nFailed: ${failedCount}\nTime: ${formatElapsedTime(totalElapsed)}`
             batchResultPopup.open()
         }
